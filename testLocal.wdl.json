@@ -1,0 +1,14 @@
+{
+  "haplotype.bamIndices": [
+    "/.mounts/labs/gsi/testdata/GATKHaplotypeCaller/workflow/development/input_data/PCSI0022P.sorted.filter.deduped.realigned.recal.bai"
+  ],
+  "haplotype.bams": [
+    "/.mounts/labs/gsi/testdata/GATKHaplotypeCaller/workflow/development/input_data/PCSI0022P.sorted.filter.deduped.realigned.recal.bam"
+  ],
+  "haplotype.dbsnpFilePath": "$HG19_DBSNP_ROOT/dbsnp_137.hg19.vcf",
+  "haplotype.filterIntervals": "/.mounts/labs/gsi/testdata/GATKHaplotypeCaller/workflow/development/PCSI0022.val.bed",
+  "haplotype.outputFileNamePrefix": "",
+  "haplotype.referenceChromosomeSizes": "$HG19_ROOT/hg19.chrom.sizes.bed",
+  "haplotype.referenceModule": "hg19/p13",
+  "haplotype.referenceSequence": "$HG19_ROOT/hg19_random.fa"
+}
