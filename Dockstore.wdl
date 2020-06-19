@@ -9,15 +9,20 @@ workflow haplotype {
   input {
     Array[File]+ bamIndices
     Array[File]+ bams
-    String dbsnpFilePath
-    String? filterIntervals
+    # String dbsnpFilePath
+    File dbsnpFilePath
+    # String? filterIntervals
+    File? filterIntervals
     Int intervalPadding = 0
     String modules = "gatk/4.1.5.0"
     String outputFileNamePrefix
-    String referenceChromosomeSizes
+    # String referenceChromosomeSizes
+    File referenceChromosomeSizes
     String referenceModule
-    String referenceSequence
+    # String referenceSequence
+    File referenceSequence
     Int timeout = 24
+    String docker = "g3chen/haplotypecaller:1.0"
   }
   parameter_meta {
       bamIndices: "The indicies for the BAM files to be used"
@@ -31,6 +36,7 @@ workflow haplotype {
       referenceModule: "The environment module containing the reference genome and/or dbSNP"
       referenceSequence: "The file path to the reference genome"
       timeout: "The maximum runtime of the workflow in hours."
+      docker: "Docker container to run the workflow in"
   }
 
   meta {
@@ -45,7 +51,8 @@ workflow haplotype {
   call bed2intervals {
     input:
       referenceChromosomeSizes = referenceChromosomeSizes,
-      referenceModule = referenceModule
+      referenceModule = referenceModule,
+      docker = docker
   }
   scatter (interval in bed2intervals.intervals) {
      call callHaplotypes {
@@ -58,7 +65,8 @@ workflow haplotype {
          modules = modules,
          outputFileNamePrefix = "~{outputFileNamePrefix}~{interval.fileSuffix}",
          referenceModule = referenceModule,
-         referenceSequence = referenceSequence
+         referenceSequence = referenceSequence,
+         docker = docker
      }
   }
 
@@ -66,7 +74,8 @@ workflow haplotype {
     input:
       modules = modules,
       outputFileNamePrefix = outputFileNamePrefix,
-      vcfs = callHaplotypes.rawVcf
+      vcfs = callHaplotypes.rawVcf,
+      docker = docker
   }
   output {
     File vcf = combine.vcf
@@ -77,19 +86,23 @@ workflow haplotype {
 
 task bed2intervals {
   input {
-    String referenceChromosomeSizes
+    # String referenceChromosomeSizes
+    File referenceChromosomeSizes
     String referenceModule
+    String docker
   }
   parameter_meta {
       referenceChromoesomeSizes: "The file path to the chromosome sizes. These are used for parallelisation"
       referenceModule: "The environment module containing the reference genome and/or dbSNP"
+      docker: "Docker container to run the workflow in"
   }
   command <<<
     awk 'BEGIN {print "[" } {print "{\"range\":\""$1":"$2"-"$3"\",\"fileSuffix\":\""$1"_"$2"_"$3"\"}"(NR == 1 ? "" : ",")} END {print"]"}' ~{referenceChromosomeSizes}
   >>>
 
   runtime {
-    memory: "~{100} MB"
+  	docker:  "~{docker}"
+    memory:  "~{100} MB"
     modules: "~{referenceModule}"
   }
 
@@ -102,17 +115,21 @@ task callHaplotypes {
   input {
     Array[File]+ bamIndices
     Array[File]+ bams
-    String dbsnpFilePath
+    # String dbsnpFilePath
+    File dbsnpFilePath
     String extraArgs = ""
-    String? filterIntervals
+    # String? filterIntervals
+    File? filterIntervals
     Int intervalPadding
     String interval
     Int mem = 8
     String modules
     String outputFileNamePrefix
     String referenceModule
-    String referenceSequence
+    # String referenceSequence
+    File referenceSequence
     Int timeout = 24
+    String docker
   }
   parameter_meta {
       bamIndices: "The indicies for the BAM files to be used"
@@ -128,6 +145,7 @@ task callHaplotypes {
       referenceModule: "The environment module containing the reference genome and/or dbSNP"
       referenceSequence: "The file path to the reference genome"
       timeout: "The maximum runtime of the task in hours."
+      docker: "Docker container to run the workflow in"
   }
   meta {
       output_meta : {
@@ -151,7 +169,8 @@ task callHaplotypes {
   >>>
 
   runtime {
-    memory: "~{mem} GB"
+  	docker:  "~{docker}"
+    memory:  "~{mem} GB"
     modules: "~{modules} ~{referenceModule}"
     timeout: "~{timeout}"
   }
@@ -168,6 +187,7 @@ task combine {
     String outputFileNamePrefix
     String timeout = 24
     Array[File] vcfs
+    String docker = docker
   }
   Array[String] vcfArgs = prefix("--INPUT ", vcfs)
 
@@ -179,7 +199,8 @@ task combine {
   >>>
 
   runtime {
-    memory: "~{mem} GB"
+  	docker:  "~{docker}"
+    memory:  "~{mem} GB"
     modules: "~{modules}"
     timeout: "~{timeout}"
   }
@@ -195,6 +216,7 @@ task combine {
     outputFileNamePrefix: "The desired output file name"
     timeout: "The maximum runtime of the task in hours."
     vcfs: "Input txt file containing file paths for all VCFs to be combined."
+      docker: "Docker container to run the workflow in"
   }
 
   meta {
