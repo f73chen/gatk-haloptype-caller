@@ -62,6 +62,7 @@ workflow haplotype {
          dbsnpFilePath = dbsnpFilePath,
          filterIntervals = filterIntervals,
          interval = interval.range,
+         intervalPadding = intervalPadding,
          modules = modules,
          outputFileNamePrefix = "~{outputFileNamePrefix}~{interval.fileSuffix}",
          referenceModule = referenceModule,
