@@ -92,7 +92,7 @@ task bed2intervals {
     String docker
   }
   parameter_meta {
-      referenceChromoesomeSizes: "The file path to the chromosome sizes. These are used for parallelisation"
+      referenceChromosomeSizes: "The file path to the chromosome sizes. These are used for parallelisation"
       referenceModule: "The environment module containing the reference genome and/or dbSNP"
       docker: "Docker container to run the workflow in"
   }
