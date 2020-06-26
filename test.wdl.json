@@ -2,7 +2,7 @@
   "haplotypeCaller.bai": "/home/ubuntu/Downloads/sample_data/test_haplotype_caller/PCSI0022P.sorted.filter.deduped.realigned.recal.bai",
   "haplotypeCaller.bam": "/home/ubuntu/Downloads/sample_data/test_haplotype_caller/PCSI0022P.sorted.filter.deduped.realigned.recal.bam",
   "haplotypeCaller.outputFileNamePrefix": "PCSI0022P",
-  "haplotypeCaller.intervalsToParallelizeBy": "chr1,chr2",
+  "haplotypeCaller.intervalsToParallelizeBy": "chr1",
   "haplotypeCaller.callHaplotypes.modules": "gatk/4.1.7.0",
   "haplotypeCaller.callHaplotypes.refFasta": "/data/HG19_ROOT/hg19_random.fa",
   "haplotypeCaller.callHaplotypes.dbsnpFilePath": "/data/HG19_DBSNP_LEFTALIGNED_ROOT/dbsnp_138.hg19.leftAligned.vcf.gz",
